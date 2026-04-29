@@ -21,7 +21,7 @@ export default function Key({ label, width, color, onClick }: KeyProps) {
                 boxShadow: '0 3px 0 rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.08)',
             }}
         >
-            <span className="text-[9px] font-medium text-gray-600 leading-none pb-1.5 pl-1.5 pointer-events-none">
+            <span className="text-[11px] font-medium text-gray-600 leading-none pb-2 pl-2 pointer-events-none">
                 {label}
             </span>
         </button>
