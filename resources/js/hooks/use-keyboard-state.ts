@@ -1,10 +1,13 @@
 import { useCallback, useState } from 'react';
+import type { KeyDefinition } from '@/types/keyboard';
 
 type KeyColorMap = Record<string, string>;
 
 interface UseKeyboardStateReturn {
     keyColors: KeyColorMap;
     setKeyColor: (keyId: string, color: string) => void;
+    fillAll: (layout: KeyDefinition[], color: string) => void;
+    fillRow: (layout: KeyDefinition[], row: number, color: string) => void;
     loadColors: (colors: KeyColorMap) => void;
     resetColors: () => void;
 }
@@ -16,6 +19,20 @@ export function useKeyboardState(): UseKeyboardStateReturn {
         setKeyColors((prev) => ({ ...prev, [keyId]: color }));
     }, []);
 
+    const fillAll = useCallback((layout: KeyDefinition[], color: string) => {
+        const next: KeyColorMap = {};
+        layout.forEach((key) => { next[key.id] = color; });
+        setKeyColors(next);
+    }, []);
+
+    const fillRow = useCallback((layout: KeyDefinition[], row: number, color: string) => {
+        setKeyColors((prev) => {
+            const next = { ...prev };
+            layout.filter((key) => key.y === row).forEach((key) => { next[key.id] = color; });
+            return next;
+        });
+    }, []);
+
     const loadColors = useCallback((colors: KeyColorMap) => {
         setKeyColors(colors);
     }, []);
@@ -24,5 +41,5 @@ export function useKeyboardState(): UseKeyboardStateReturn {
         setKeyColors({});
     }, []);
 
-    return { keyColors, setKeyColor, loadColors, resetColors };
+    return { keyColors, setKeyColor, fillAll, fillRow, loadColors, resetColors };
 }

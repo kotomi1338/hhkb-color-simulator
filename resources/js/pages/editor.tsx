@@ -9,7 +9,7 @@ import { history } from '@/routes';
 import { getDesignById, saveDesign } from '@/utils/storage';
 
 export default function Editor() {
-    const { keyColors, setKeyColor, loadColors } = useKeyboardState();
+    const { keyColors, setKeyColor, fillAll, fillRow, loadColors } = useKeyboardState();
     const [activeColor, setActiveColor] = useState<string>(HHKB_PALETTE.YUKI);
     const [saveName, setSaveName] = useState('');
     const [hoveredKeyId, setHoveredKeyId] = useState<string | null>(null);
@@ -65,6 +65,24 @@ export default function Editor() {
                         activeColor={activeColor}
                         onColorSelect={setActiveColor}
                     />
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => fillAll(US_HHKB_LAYOUT, activeColor)}
+                            className="text-xs text-gray-600 bg-white border border-gray-300 px-3 py-1.5 rounded-md hover:bg-gray-50"
+                        >
+                            全キー
+                        </button>
+                        <span className="w-px h-4 bg-gray-300" />
+                        {([0, 1, 2, 3, 4] as const).map((row) => (
+                            <button
+                                key={row}
+                                onClick={() => fillRow(US_HHKB_LAYOUT, row, activeColor)}
+                                className="text-xs text-gray-600 bg-white border border-gray-300 px-3 py-1.5 rounded-md hover:bg-gray-50"
+                            >
+                                {row + 1}行目
+                            </button>
+                        ))}
+                    </div>
                     <div className="flex items-center gap-2">
                         <input
                             type="text"
