@@ -1,7 +1,14 @@
 import { Head, Link } from '@inertiajs/react';
+import KeyboardCanvas from '@/components/keyboard-canvas';
+import { HHKB_PALETTE } from '@/constants/colors';
+import { US_HHKB_LAYOUT } from '@/constants/layouts/us-hhkb';
+import { useKeyboardState } from '@/hooks/use-keyboard-state';
 import { history } from '@/routes';
 
 export default function Editor() {
+    const { keyColors, setKeyColor } = useKeyboardState();
+    const activeColor = HHKB_PALETTE.YUKI;
+
     return (
         <>
             <Head title="HHKB Color Simulator" />
@@ -14,7 +21,11 @@ export default function Editor() {
                 </header>
 
                 <main className="flex-1 flex flex-col items-center justify-center gap-8 p-8">
-                    {/* KeyboardCanvas (Step 3) */}
+                    <KeyboardCanvas
+                        layout={US_HHKB_LAYOUT}
+                        keyColors={keyColors}
+                        onKeyClick={(keyId) => setKeyColor(keyId, activeColor)}
+                    />
                     {/* ColorPicker (Step 4) */}
                 </main>
             </div>
