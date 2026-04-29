@@ -1,5 +1,6 @@
 import Key from '@/components/key';
-import { KEY_DEFAULT_COLOR, KEY_GAP_PX, UNIT_PX } from '@/constants/keyboard';
+import { HHKB_PALETTE } from '@/constants/colors';
+import { KEY_GAP_PX, UNIT_PX } from '@/constants/keyboard';
 import type { KeyDefinition } from '@/types/keyboard';
 
 const CANVAS_COLS = 15;
@@ -32,7 +33,7 @@ export default function KeyboardCanvas({ layout, keyColors, onKeyClick }: Keyboa
                     <Key
                         label={key.label}
                         width={key.w}
-                        color={keyColors[key.id] ?? KEY_DEFAULT_COLOR}
+                        color={keyColors[key.id] ?? HHKB_PALETTE.YUKI}
                         onClick={() => onKeyClick(key.id)}
                     />
                 </div>

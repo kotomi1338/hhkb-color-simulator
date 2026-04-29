@@ -1,4 +1,4 @@
-import { KEY_DEFAULT_COLOR, KEY_GAP_PX, UNIT_PX } from '@/constants/keyboard';
+import { KEY_GAP_PX, UNIT_PX } from '@/constants/keyboard';
 
 interface KeyProps {
     label: string;
@@ -8,7 +8,6 @@ interface KeyProps {
 }
 
 export default function Key({ label, width, color, onClick }: KeyProps) {
-    const bgColor = color || KEY_DEFAULT_COLOR;
 
     return (
         <button
@@ -17,7 +16,7 @@ export default function Key({ label, width, color, onClick }: KeyProps) {
             style={{
                 width: width * UNIT_PX - KEY_GAP_PX,
                 height: UNIT_PX - KEY_GAP_PX,
-                backgroundColor: bgColor,
+                backgroundColor: color,
                 boxShadow: '0 3px 0 rgba(0,0,0,0.22), 0 0 0 1px rgba(0,0,0,0.08)',
             }}
         >
