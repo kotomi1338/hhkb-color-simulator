@@ -12,6 +12,7 @@ export default function Editor() {
     const { keyColors, setKeyColor, loadColors } = useKeyboardState();
     const [activeColor, setActiveColor] = useState<string>(HHKB_PALETTE.YUKI);
     const [saveName, setSaveName] = useState('');
+    const [hoveredKeyId, setHoveredKeyId] = useState<string | null>(null);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -23,6 +24,18 @@ export default function Editor() {
             }
         }
     }, []);
+
+    useEffect(() => {
+        function handleKeyDown(e: KeyboardEvent) {
+            if (e.code !== 'Space') return;
+            if (e.target instanceof HTMLInputElement) return;
+            if (!hoveredKeyId) return;
+            e.preventDefault();
+            setKeyColor(hoveredKeyId, activeColor);
+        }
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [hoveredKeyId, activeColor, setKeyColor]);
 
     function handleSave() {
         if (!saveName.trim()) return;
@@ -46,6 +59,7 @@ export default function Editor() {
                         layout={US_HHKB_LAYOUT}
                         keyColors={keyColors}
                         onKeyClick={(keyId) => setKeyColor(keyId, activeColor)}
+                        onKeyHover={setHoveredKeyId}
                     />
                     <ColorPicker
                         activeColor={activeColor}

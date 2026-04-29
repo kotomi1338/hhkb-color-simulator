@@ -10,9 +10,10 @@ interface KeyboardCanvasProps {
     layout: KeyDefinition[];
     keyColors: Record<string, string>;
     onKeyClick: (keyId: string) => void;
+    onKeyHover?: (keyId: string | null) => void;
 }
 
-export default function KeyboardCanvas({ layout, keyColors, onKeyClick }: KeyboardCanvasProps) {
+export default function KeyboardCanvas({ layout, keyColors, onKeyClick, onKeyHover }: KeyboardCanvasProps) {
     return (
         <div
             className="relative"
@@ -29,6 +30,8 @@ export default function KeyboardCanvas({ layout, keyColors, onKeyClick }: Keyboa
                         left: key.x * UNIT_PX + KEY_GAP_PX / 2,
                         top: key.y * UNIT_PX + KEY_GAP_PX / 2,
                     }}
+                    onMouseEnter={() => onKeyHover?.(key.id)}
+                    onMouseLeave={() => onKeyHover?.(null)}
                 >
                     <Key
                         label={key.label}
