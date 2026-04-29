@@ -1,4 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
+import { useState } from 'react';
+import ColorPicker from '@/components/color-picker';
 import KeyboardCanvas from '@/components/keyboard-canvas';
 import { HHKB_PALETTE } from '@/constants/colors';
 import { US_HHKB_LAYOUT } from '@/constants/layouts/us-hhkb';
@@ -7,7 +9,7 @@ import { history } from '@/routes';
 
 export default function Editor() {
     const { keyColors, setKeyColor } = useKeyboardState();
-    const activeColor = HHKB_PALETTE.YUKI;
+    const [activeColor, setActiveColor] = useState<string>(HHKB_PALETTE.YUKI);
 
     return (
         <>
@@ -26,7 +28,10 @@ export default function Editor() {
                         keyColors={keyColors}
                         onKeyClick={(keyId) => setKeyColor(keyId, activeColor)}
                     />
-                    {/* ColorPicker (Step 4) */}
+                    <ColorPicker
+                        activeColor={activeColor}
+                        onColorSelect={setActiveColor}
+                    />
                 </main>
             </div>
         </>
