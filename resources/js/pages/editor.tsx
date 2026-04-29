@@ -1,15 +1,34 @@
 import { Head, Link } from '@inertiajs/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ColorPicker from '@/components/color-picker';
 import KeyboardCanvas from '@/components/keyboard-canvas';
 import { HHKB_PALETTE } from '@/constants/colors';
 import { US_HHKB_LAYOUT } from '@/constants/layouts/us-hhkb';
 import { useKeyboardState } from '@/hooks/use-keyboard-state';
 import { history } from '@/routes';
+import { getDesignById, saveDesign } from '@/utils/storage';
 
 export default function Editor() {
-    const { keyColors, setKeyColor } = useKeyboardState();
+    const { keyColors, setKeyColor, loadColors } = useKeyboardState();
     const [activeColor, setActiveColor] = useState<string>(HHKB_PALETTE.YUKI);
+    const [saveName, setSaveName] = useState('');
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const designId = params.get('load');
+        if (designId) {
+            const design = getDesignById(designId);
+            if (design) {
+                loadColors(design.colors);
+            }
+        }
+    }, []);
+
+    function handleSave() {
+        if (!saveName.trim()) return;
+        saveDesign(saveName.trim(), keyColors);
+        setSaveName('');
+    }
 
     return (
         <>
@@ -32,6 +51,26 @@ export default function Editor() {
                         activeColor={activeColor}
                         onColorSelect={setActiveColor}
                     />
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="text"
+                            value={saveName}
+                            onChange={(e) => setSaveName(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.nativeEvent.isComposing) return;
+                                if (e.key === 'Enter') handleSave();
+                            }}
+                            placeholder="デザイン名を入力"
+                            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
+                        />
+                        <button
+                            onClick={handleSave}
+                            className="bg-gray-800 text-white text-sm px-4 py-1.5 rounded-md hover:bg-gray-700 disabled:opacity-40"
+                            disabled={!saveName.trim()}
+                        >
+                            保存
+                        </button>
+                    </div>
                 </main>
             </div>
         </>
