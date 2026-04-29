@@ -16,7 +16,6 @@ export default function Editor() {
     const [paintMode, setPaintMode] = useState<PaintMode>('normal');
     const [activeColor, setActiveColor] = useState<string>(HHKB_PALETTE.YUKI);
     const [secondaryColor, setSecondaryColor] = useState<string>(HHKB_PALETTE.YUKI);
-    const [saveName, setSaveName] = useState('');
     const [hoveredKeyId, setHoveredKeyId] = useState<string | null>(null);
 
     useEffect(() => {
@@ -52,13 +51,10 @@ export default function Editor() {
     }
 
     function handleSave() {
-        if (!saveName.trim()) return;
-
         const allColors = Object.fromEntries(
             US_HHKB_LAYOUT.map((key) => [key.id, keyColors[key.id] ?? HHKB_PALETTE.YUKI]),
         );
-        saveDesign(saveName.trim(), allColors);
-        setSaveName('');
+        saveDesign(allColors);
     }
 
     return (
@@ -141,26 +137,12 @@ export default function Editor() {
                         ))}
                     </div>
 
-                    <div className="flex items-center gap-2">
-                        <input
-                            type="text"
-                            value={saveName}
-                            onChange={(e) => setSaveName(e.target.value)}
-                            onKeyDown={(e) => {
-                                if (e.nativeEvent.isComposing) return;
-                                if (e.key === 'Enter') handleSave();
-                            }}
-                            placeholder="デザイン名を入力"
-                            className="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
-                        />
-                        <button
-                            onClick={handleSave}
-                            className="bg-gray-800 text-white text-sm px-4 py-1.5 rounded-md hover:bg-gray-700 disabled:opacity-40"
-                            disabled={!saveName.trim()}
-                        >
-                            保存
-                        </button>
-                    </div>
+                    <button
+                        onClick={handleSave}
+                        className="bg-gray-800 text-white text-sm px-6 py-2 rounded-md hover:bg-gray-700"
+                    >
+                        このデザインを保存
+                    </button>
                 </main>
             </div>
         </>

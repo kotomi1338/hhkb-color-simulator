@@ -62,8 +62,7 @@ function DesignCard({ design, onDelete }: { design: SavedDesign; onDelete: () =>
             </div>
             <div className="p-4 flex flex-col gap-3">
                 <div>
-                    <p className="font-medium text-gray-800 truncate">{design.name}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{formattedDate}</p>
+                    <p className="text-xs text-gray-400">{formattedDate}</p>
                 </div>
                 <div className="flex gap-2">
                     <button

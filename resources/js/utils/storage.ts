@@ -2,7 +2,6 @@ const STORAGE_KEY = 'hhkb-designs';
 
 export interface SavedDesign {
     id: string;
-    name: string;
     layoutType: string;
     colors: Record<string, string>;
     savedAt: string;
@@ -22,10 +21,9 @@ export function getDesignById(id: string): SavedDesign | undefined {
     return getDesigns().find((d) => d.id === id);
 }
 
-export function saveDesign(name: string, colors: Record<string, string>): SavedDesign {
+export function saveDesign(colors: Record<string, string>): SavedDesign {
     const design: SavedDesign = {
         id: crypto.randomUUID(),
-        name,
         layoutType: 'US_HHKB',
         colors,
         savedAt: new Date().toISOString(),
