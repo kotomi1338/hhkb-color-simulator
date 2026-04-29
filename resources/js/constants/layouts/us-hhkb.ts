@@ -15,8 +15,8 @@ export const US_HHKB_LAYOUT: KeyDefinition[] = [
     { id: '0', label: '0', x: 10, y: 0, w: 1 },
     { id: 'minus', label: '-', x: 11, y: 0, w: 1 },
     { id: 'equal', label: '=', x: 12, y: 0, w: 1 },
-    { id: 'back_slash', label: '`', x: 13, y: 0, w: 1 },
-    { id: 'delete', label: 'Delete', x: 14, y: 0, w: 1 },
+    { id: 'backslash', label: '\\', x: 13, y: 0, w: 1 },
+    { id: 'backtick', label: '`', x: 14, y: 0, w: 1 },
 
     // Row 1: QWERTY行 (y=1)
     { id: 'tab', label: 'Tab', x: 0, y: 1, w: 1.5 },
@@ -32,7 +32,7 @@ export const US_HHKB_LAYOUT: KeyDefinition[] = [
     { id: 'p', label: 'P', x: 10.5, y: 1, w: 1 },
     { id: 'left_bracket', label: '[', x: 11.5, y: 1, w: 1 },
     { id: 'right_bracket', label: ']', x: 12.5, y: 1, w: 1 },
-    { id: 'backslash', label: '\\', x: 13.5, y: 1, w: 1.5 },
+    { id: 'delete', label: 'Delete', x: 13.5, y: 1, w: 1.5 },
 
     // Row 2: ASDF行 (y=2)
     { id: 'control', label: 'Control', x: 0, y: 2, w: 1.75 },
