@@ -1,0 +1,73 @@
+import type { KeyDefinition } from '@/types/keyboard';
+
+export const US_HHKB_LAYOUT: KeyDefinition[] = [
+    // Row 0: 数字行 (y=0)
+    { id: 'esc', label: 'Esc', x: 0, y: 0, w: 1 },
+    { id: '1', label: '1', x: 1, y: 0, w: 1 },
+    { id: '2', label: '2', x: 2, y: 0, w: 1 },
+    { id: '3', label: '3', x: 3, y: 0, w: 1 },
+    { id: '4', label: '4', x: 4, y: 0, w: 1 },
+    { id: '5', label: '5', x: 5, y: 0, w: 1 },
+    { id: '6', label: '6', x: 6, y: 0, w: 1 },
+    { id: '7', label: '7', x: 7, y: 0, w: 1 },
+    { id: '8', label: '8', x: 8, y: 0, w: 1 },
+    { id: '9', label: '9', x: 9, y: 0, w: 1 },
+    { id: '0', label: '0', x: 10, y: 0, w: 1 },
+    { id: 'minus', label: '-', x: 11, y: 0, w: 1 },
+    { id: 'equal', label: '=', x: 12, y: 0, w: 1 },
+    { id: 'back_slash', label: '`', x: 13, y: 0, w: 1 },
+    { id: 'delete', label: 'Delete', x: 14, y: 0, w: 1 },
+
+    // Row 1: QWERTY行 (y=1)
+    { id: 'tab', label: 'Tab', x: 0, y: 1, w: 1.5 },
+    { id: 'q', label: 'Q', x: 1.5, y: 1, w: 1 },
+    { id: 'w', label: 'W', x: 2.5, y: 1, w: 1 },
+    { id: 'e', label: 'E', x: 3.5, y: 1, w: 1 },
+    { id: 'r', label: 'R', x: 4.5, y: 1, w: 1 },
+    { id: 't', label: 'T', x: 5.5, y: 1, w: 1 },
+    { id: 'y', label: 'Y', x: 6.5, y: 1, w: 1 },
+    { id: 'u', label: 'U', x: 7.5, y: 1, w: 1 },
+    { id: 'i', label: 'I', x: 8.5, y: 1, w: 1 },
+    { id: 'o', label: 'O', x: 9.5, y: 1, w: 1 },
+    { id: 'p', label: 'P', x: 10.5, y: 1, w: 1 },
+    { id: 'left_bracket', label: '[', x: 11.5, y: 1, w: 1 },
+    { id: 'right_bracket', label: ']', x: 12.5, y: 1, w: 1 },
+    { id: 'backslash', label: '\\', x: 13.5, y: 1, w: 1.5 },
+
+    // Row 2: ASDF行 (y=2)
+    { id: 'control', label: 'Control', x: 0, y: 2, w: 1.75 },
+    { id: 'a', label: 'A', x: 1.75, y: 2, w: 1 },
+    { id: 's', label: 'S', x: 2.75, y: 2, w: 1 },
+    { id: 'd', label: 'D', x: 3.75, y: 2, w: 1 },
+    { id: 'f', label: 'F', x: 4.75, y: 2, w: 1 },
+    { id: 'g', label: 'G', x: 5.75, y: 2, w: 1 },
+    { id: 'h', label: 'H', x: 6.75, y: 2, w: 1 },
+    { id: 'j', label: 'J', x: 7.75, y: 2, w: 1 },
+    { id: 'k', label: 'K', x: 8.75, y: 2, w: 1 },
+    { id: 'l', label: 'L', x: 9.75, y: 2, w: 1 },
+    { id: 'semicolon', label: ';', x: 10.75, y: 2, w: 1 },
+    { id: 'apostrophe', label: "'", x: 11.75, y: 2, w: 1 },
+    { id: 'return', label: 'Return', x: 12.75, y: 2, w: 2.25 },
+
+    // Row 3: ZXCV行 (y=3)
+    { id: 'left_shift', label: 'Shift', x: 0, y: 3, w: 2.25 },
+    { id: 'z', label: 'Z', x: 2.25, y: 3, w: 1 },
+    { id: 'x', label: 'X', x: 3.25, y: 3, w: 1 },
+    { id: 'c', label: 'C', x: 4.25, y: 3, w: 1 },
+    { id: 'v', label: 'V', x: 5.25, y: 3, w: 1 },
+    { id: 'b', label: 'B', x: 6.25, y: 3, w: 1 },
+    { id: 'n', label: 'N', x: 7.25, y: 3, w: 1 },
+    { id: 'm', label: 'M', x: 8.25, y: 3, w: 1 },
+    { id: 'comma', label: ',', x: 9.25, y: 3, w: 1 },
+    { id: 'period', label: '.', x: 10.25, y: 3, w: 1 },
+    { id: 'slash', label: '/', x: 11.25, y: 3, w: 1 },
+    { id: 'right_shift', label: 'Shift', x: 12.25, y: 3, w: 1.75 },
+    { id: 'fn', label: 'Fn', x: 14, y: 3, w: 1 },
+
+    // Row 4: 最下段 (y=4)
+    { id: 'left_opt', label: 'Opt', x: 1.5, y: 4, w: 1 },
+    { id: 'left_cmd', label: 'Cmd', x: 2.5, y: 4, w: 1.5 },
+    { id: 'space', label: 'Space', x: 4, y: 4, w: 6 },
+    { id: 'right_cmd', label: 'Cmd', x: 10, y: 4, w: 1.5 },
+    { id: 'right_opt', label: 'Opt', x: 11.5, y: 4, w: 1 },
+];
