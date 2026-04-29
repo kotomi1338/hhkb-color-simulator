@@ -18,7 +18,7 @@
 > 6. `resources/js/Pages/Editor.tsx` を新規作成し、ここをメインのシミュレーター画面とします。
 
 ### Step 2: 共通カラー定数と状態管理の作成
-> 1. 指定の6色（雪, TANPOPO, 桜, 山葵, 藤, 青空）を `resources/js/constants/colors.ts` に定義してください。
+> 1. 指定の6色（雪, TANPOPO, 桜, 山葵, 藤, 空）を `resources/js/constants/colors.ts` に定義してください。
 > 2. 黄色のキーは、変数名・キー名を **`TANPOPO`** としてください。
 > 3. エディタの現在の配色状態（Key IDとColorのマップ）を保持するためのカスタムフック `useKeyboardState` を作成してください。
 
