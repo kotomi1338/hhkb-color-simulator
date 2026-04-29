@@ -5,12 +5,17 @@ import KeyboardCanvas from '@/components/keyboard-canvas';
 import { HHKB_PALETTE } from '@/constants/colors';
 import { US_HHKB_LAYOUT } from '@/constants/layouts/us-hhkb';
 import { useKeyboardState } from '@/hooks/use-keyboard-state';
+import { cn } from '@/lib/utils';
 import { history } from '@/routes';
 import { getDesignById, saveDesign } from '@/utils/storage';
 
+type PaintMode = 'normal' | 'toggle';
+
 export default function Editor() {
     const { keyColors, setKeyColor, fillAll, fillRow, loadColors } = useKeyboardState();
+    const [paintMode, setPaintMode] = useState<PaintMode>('normal');
     const [activeColor, setActiveColor] = useState<string>(HHKB_PALETTE.YUKI);
+    const [secondaryColor, setSecondaryColor] = useState<string>(HHKB_PALETTE.YUKI);
     const [saveName, setSaveName] = useState('');
     const [hoveredKeyId, setHoveredKeyId] = useState<string | null>(null);
 
@@ -31,11 +36,20 @@ export default function Editor() {
             if (e.target instanceof HTMLInputElement) return;
             if (!hoveredKeyId) return;
             e.preventDefault();
-            setKeyColor(hoveredKeyId, activeColor);
+            applyColor(hoveredKeyId);
         }
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [hoveredKeyId, activeColor, setKeyColor]);
+    }, [hoveredKeyId, paintMode, activeColor, secondaryColor, keyColors]);
+
+    function applyColor(keyId: string) {
+        if (paintMode === 'toggle') {
+            const current = keyColors[keyId] ?? HHKB_PALETTE.YUKI;
+            setKeyColor(keyId, current === activeColor ? secondaryColor : activeColor);
+        } else {
+            setKeyColor(keyId, activeColor);
+        }
+    }
 
     function handleSave() {
         if (!saveName.trim()) return;
@@ -58,13 +72,52 @@ export default function Editor() {
                     <KeyboardCanvas
                         layout={US_HHKB_LAYOUT}
                         keyColors={keyColors}
-                        onKeyClick={(keyId) => setKeyColor(keyId, activeColor)}
+                        onKeyClick={applyColor}
                         onKeyHover={setHoveredKeyId}
                     />
-                    <ColorPicker
-                        activeColor={activeColor}
-                        onColorSelect={setActiveColor}
-                    />
+
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="flex items-center gap-2">
+                            <button
+                                onClick={() => setPaintMode('normal')}
+                                className={cn(
+                                    'text-xs px-3 py-1.5 rounded-md border transition-colors',
+                                    paintMode === 'normal'
+                                        ? 'bg-gray-800 text-white border-gray-800'
+                                        : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50',
+                                )}
+                            >
+                                通常
+                            </button>
+                            <button
+                                onClick={() => setPaintMode('toggle')}
+                                className={cn(
+                                    'text-xs px-3 py-1.5 rounded-md border transition-colors',
+                                    paintMode === 'toggle'
+                                        ? 'bg-gray-800 text-white border-gray-800'
+                                        : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50',
+                                )}
+                            >
+                                トグル
+                            </button>
+                        </div>
+
+                        {paintMode === 'toggle' ? (
+                            <div className="flex items-start gap-8">
+                                <div className="flex flex-col items-center gap-2">
+                                    <span className="text-xs text-gray-500">1色目</span>
+                                    <ColorPicker activeColor={activeColor} onColorSelect={setActiveColor} />
+                                </div>
+                                <div className="flex flex-col items-center gap-2">
+                                    <span className="text-xs text-gray-500">2色目</span>
+                                    <ColorPicker activeColor={secondaryColor} onColorSelect={setSecondaryColor} />
+                                </div>
+                            </div>
+                        ) : (
+                            <ColorPicker activeColor={activeColor} onColorSelect={setActiveColor} />
+                        )}
+                    </div>
+
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => fillAll(US_HHKB_LAYOUT, activeColor)}
@@ -83,6 +136,7 @@ export default function Editor() {
                             </button>
                         ))}
                     </div>
+
                     <div className="flex items-center gap-2">
                         <input
                             type="text"
