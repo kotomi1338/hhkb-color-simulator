@@ -53,7 +53,11 @@ export default function Editor() {
 
     function handleSave() {
         if (!saveName.trim()) return;
-        saveDesign(saveName.trim(), keyColors);
+
+        const allColors = Object.fromEntries(
+            US_HHKB_LAYOUT.map((key) => [key.id, keyColors[key.id] ?? HHKB_PALETTE.YUKI]),
+        );
+        saveDesign(saveName.trim(), allColors);
         setSaveName('');
     }
 

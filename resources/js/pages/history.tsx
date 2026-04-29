@@ -1,5 +1,5 @@
 import { Head, Link, router } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { home } from '@/routes';
 import { deleteDesign, getDesigns, type SavedDesign } from '@/utils/storage';
 
@@ -56,11 +56,7 @@ function DesignCard({ design, onDelete }: { design: SavedDesign; onDelete: () =>
 }
 
 export default function History() {
-    const [designs, setDesigns] = useState<SavedDesign[]>([]);
-
-    useEffect(() => {
-        setDesigns(getDesigns());
-    }, []);
+    const [designs, setDesigns] = useState<SavedDesign[]>(() => getDesigns());
 
     function refresh() {
         setDesigns(getDesigns());
