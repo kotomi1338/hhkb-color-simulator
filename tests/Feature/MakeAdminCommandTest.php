@@ -24,17 +24,26 @@ class MakeAdminCommandTest extends TestCase
         $this->assertSame(UserRole::Admin, $user->fresh()->role);
     }
 
-    public function test_it_creates_a_new_admin_user_when_none_exists(): void
+    public function test_it_creates_a_new_admin_user_from_options(): void
     {
-        $this->artisan('app:make-admin', ['email' => 'new@example.com'])
-            ->expectsQuestion('Name for the new admin', 'New Admin')
-            ->expectsQuestion('Password for the new admin', 'password-123')
-            ->assertSuccessful();
+        $this->artisan('app:make-admin', [
+            'email' => 'new@example.com',
+            '--name' => 'New Admin',
+            '--password' => 'password-123',
+        ])->assertSuccessful();
 
         $user = User::where('email', 'new@example.com')->first();
 
         $this->assertNotNull($user);
         $this->assertSame(UserRole::Admin, $user->role);
         $this->assertNotNull($user->email_verified_at);
+    }
+
+    public function test_it_fails_to_create_without_name_and_password_when_non_interactive(): void
+    {
+        $this->artisan('app:make-admin', ['email' => 'missing@example.com', '--no-interaction' => true])
+            ->assertFailed();
+
+        $this->assertDatabaseMissing('users', ['email' => 'missing@example.com']);
     }
 }
