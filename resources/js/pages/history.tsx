@@ -93,9 +93,9 @@ export default function History({ designs }: { designs: Design[] }) {
         <>
             <Head title="History - HHKB Color Simulator" />
             <div className="min-h-screen bg-gray-100 flex flex-col">
-                <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-                    <h1 className="text-lg font-semibold text-gray-800">HHKB Color Simulator</h1>
-                    <div className="flex items-center gap-4">
+                <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4 flex items-center justify-between gap-2">
+                    <h1 className="text-base sm:text-lg font-semibold text-gray-800 truncate">HHKB Color Simulator</h1>
+                    <div className="flex items-center gap-3 sm:gap-4 shrink-0">
                         <Link href={home.url()} className="text-sm text-gray-500 hover:text-gray-700">
                             Editor
                         </Link>
@@ -103,7 +103,7 @@ export default function History({ designs }: { designs: Design[] }) {
                     </div>
                 </header>
 
-                <main className="flex-1 p-8 max-w-5xl mx-auto w-full">
+                <main className="flex-1 p-4 sm:p-8 max-w-5xl mx-auto w-full">
                     <h2 className="text-base font-semibold text-gray-700 mb-6">保存済みデザイン</h2>
 
                     {designs.length === 0 ? (
@@ -111,7 +111,7 @@ export default function History({ designs }: { designs: Design[] }) {
                             保存されたデザインはありません
                         </div>
                     ) : (
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {designs.map((design) => (
                                 <DesignCard key={design.id} design={design} canDelete={canDelete} />
                             ))}

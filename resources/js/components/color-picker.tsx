@@ -17,7 +17,7 @@ const PALETTE_ENTRIES = [
 
 export default function ColorPicker({ activeColor, onColorSelect }: ColorPickerProps) {
     return (
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
             {PALETTE_ENTRIES.map(({ color, label }) => (
                 <button
                     key={color}

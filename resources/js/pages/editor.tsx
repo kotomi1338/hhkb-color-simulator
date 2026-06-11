@@ -58,9 +58,9 @@ export default function Editor({ design }: { design: Design | null }) {
         <>
             <Head title="HHKB Color Simulator" />
             <div className="min-h-screen bg-gray-100 flex flex-col">
-                <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
-                    <h1 className="text-lg font-semibold text-gray-800">HHKB Color Simulator</h1>
-                    <div className="flex items-center gap-4">
+                <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4 flex items-center justify-between gap-2">
+                    <h1 className="text-base sm:text-lg font-semibold text-gray-800 truncate">HHKB Color Simulator</h1>
+                    <div className="flex items-center gap-3 sm:gap-4 shrink-0">
                         <Link href={history.url()} className="text-sm text-gray-500 hover:text-gray-700">
                             History
                         </Link>
@@ -68,7 +68,7 @@ export default function Editor({ design }: { design: Design | null }) {
                     </div>
                 </header>
 
-                <main className="flex-1 flex flex-col items-center justify-center gap-8 p-8">
+                <main className="flex-1 flex flex-col items-center justify-center gap-6 sm:gap-8 p-4 sm:p-8 w-full">
                     <KeyboardCanvas
                         layout={US_HHKB_LAYOUT}
                         keyColors={keyColors}
@@ -103,7 +103,7 @@ export default function Editor({ design }: { design: Design | null }) {
                         </div>
 
                         {paintMode === 'toggle' ? (
-                            <div className="flex items-start gap-8">
+                            <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
                                 <div className="flex flex-col items-center gap-2">
                                     <span className="text-xs text-gray-500">1色目</span>
                                     <ColorPicker activeColor={activeColor} onColorSelect={setActiveColor} />
@@ -118,14 +118,14 @@ export default function Editor({ design }: { design: Design | null }) {
                         )}
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center justify-center gap-2">
                         <button
                             onClick={() => fillAll(US_HHKB_LAYOUT, activeColor)}
                             className="text-xs text-gray-600 bg-white border border-gray-300 px-3 py-1.5 rounded-md hover:bg-gray-50"
                         >
                             全キー
                         </button>
-                        <span className="w-px h-4 bg-gray-300" />
+                        <span className="hidden sm:block w-px h-4 bg-gray-300" />
                         {([0, 1, 2, 3, 4] as const).map((row) => (
                             <button
                                 key={row}
