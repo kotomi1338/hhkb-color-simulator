@@ -1,11 +1,17 @@
 <?php
 
+use App\Http\Controllers\DesignController;
 use Illuminate\Support\Facades\Route;
-use Laravel\Fortify\Features;
 
-Route::inertia('/', 'editor')->name('home');
+Route::get('/', [DesignController::class, 'editor'])->name('home');
 
-Route::inertia('/history', 'history')->name('history');
+Route::get('/history', [DesignController::class, 'index'])->name('history');
+
+Route::post('/designs', [DesignController::class, 'store'])->name('designs.store');
+
+Route::middleware('auth')->group(function () {
+    Route::delete('/designs/{design}', [DesignController::class, 'destroy'])->name('designs.destroy');
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::inertia('dashboard', 'dashboard')->name('dashboard');
