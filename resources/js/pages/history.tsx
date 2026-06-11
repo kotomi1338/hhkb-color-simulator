@@ -1,5 +1,6 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
 import { destroy } from '@/actions/App/Http/Controllers/DesignController';
+import AuthControl from '@/components/auth-control';
 import KeyboardCanvas from '@/components/keyboard-canvas';
 import { UNIT_PX } from '@/constants/keyboard';
 import { US_HHKB_LAYOUT } from '@/constants/layouts/us-hhkb';
@@ -94,9 +95,12 @@ export default function History({ designs }: { designs: Design[] }) {
             <div className="min-h-screen bg-gray-100 flex flex-col">
                 <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
                     <h1 className="text-lg font-semibold text-gray-800">HHKB Color Simulator</h1>
-                    <Link href={home.url()} className="text-sm text-gray-500 hover:text-gray-700">
-                        Editor
-                    </Link>
+                    <div className="flex items-center gap-4">
+                        <Link href={home.url()} className="text-sm text-gray-500 hover:text-gray-700">
+                            Editor
+                        </Link>
+                        <AuthControl />
+                    </div>
                 </header>
 
                 <main className="flex-1 p-8 max-w-5xl mx-auto w-full">
