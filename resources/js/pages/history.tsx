@@ -1,10 +1,10 @@
-import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
+import { destroy } from '@/actions/App/Http/Controllers/DesignController';
 import KeyboardCanvas from '@/components/keyboard-canvas';
 import { UNIT_PX } from '@/constants/keyboard';
 import { US_HHKB_LAYOUT } from '@/constants/layouts/us-hhkb';
 import { home } from '@/routes';
-import { deleteDesign, getDesigns, type SavedDesign } from '@/utils/storage';
+import type { Design } from '@/types';
 
 const CANVAS_W = 15 * UNIT_PX;
 const CANVAS_H = 5 * UNIT_PX;
@@ -37,8 +37,8 @@ function KeyboardPreview({ colors }: { colors: Record<string, string> }) {
     );
 }
 
-function DesignCard({ design, onDelete }: { design: SavedDesign; onDelete: () => void }) {
-    const formattedDate = new Date(design.savedAt).toLocaleString('ja-JP', {
+function DesignCard({ design, canDelete }: { design: Design; canDelete: boolean }) {
+    const formattedDate = new Date(design.created_at).toLocaleString('ja-JP', {
         year: 'numeric',
         month: 'short',
         day: 'numeric',
@@ -51,8 +51,7 @@ function DesignCard({ design, onDelete }: { design: SavedDesign; onDelete: () =>
     }
 
     function handleDelete() {
-        deleteDesign(design.id);
-        onDelete();
+        router.delete(destroy.url(design.id));
     }
 
     return (
@@ -71,24 +70,23 @@ function DesignCard({ design, onDelete }: { design: SavedDesign; onDelete: () =>
                     >
                         読み込む
                     </button>
-                    <button
-                        onClick={handleDelete}
-                        className="text-sm text-red-500 hover:text-red-700 px-3 py-1.5"
-                    >
-                        削除
-                    </button>
+                    {canDelete && (
+                        <button
+                            onClick={handleDelete}
+                            className="text-sm text-red-500 hover:text-red-700 px-3 py-1.5"
+                        >
+                            削除
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
     );
 }
 
-export default function History() {
-    const [designs, setDesigns] = useState<SavedDesign[]>(() => getDesigns());
-
-    function refresh() {
-        setDesigns(getDesigns());
-    }
+export default function History({ designs }: { designs: Design[] }) {
+    const { auth } = usePage().props;
+    const canDelete = auth.user?.role === 'admin';
 
     return (
         <>
@@ -111,7 +109,7 @@ export default function History() {
                     ) : (
                         <div className="grid grid-cols-3 gap-4">
                             {designs.map((design) => (
-                                <DesignCard key={design.id} design={design} onDelete={refresh} />
+                                <DesignCard key={design.id} design={design} canDelete={canDelete} />
                             ))}
                         </div>
                     )}

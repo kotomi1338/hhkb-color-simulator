@@ -1,5 +1,6 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import { store } from '@/actions/App/Http/Controllers/DesignController';
 import ColorPicker from '@/components/color-picker';
 import KeyboardCanvas from '@/components/keyboard-canvas';
 import { HHKB_PALETTE } from '@/constants/colors';
@@ -7,11 +8,11 @@ import { US_HHKB_LAYOUT } from '@/constants/layouts/us-hhkb';
 import { useKeyboardState } from '@/hooks/use-keyboard-state';
 import { cn } from '@/lib/utils';
 import { history } from '@/routes';
-import { getDesignById, saveDesign } from '@/utils/storage';
+import type { Design } from '@/types';
 
 type PaintMode = 'normal' | 'toggle';
 
-export default function Editor() {
+export default function Editor({ design }: { design: Design | null }) {
     const { keyColors, setKeyColor, fillAll, fillRow, loadColors } = useKeyboardState();
     const [paintMode, setPaintMode] = useState<PaintMode>('normal');
     const [activeColor, setActiveColor] = useState<string>(HHKB_PALETTE.YUKI);
@@ -19,15 +20,10 @@ export default function Editor() {
     const [hoveredKeyId, setHoveredKeyId] = useState<string | null>(null);
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        const designId = params.get('load');
-        if (designId) {
-            const design = getDesignById(designId);
-            if (design) {
-                loadColors(design.colors);
-            }
+        if (design) {
+            loadColors(design.colors);
         }
-    }, []);
+    }, [design, loadColors]);
 
     useEffect(() => {
         function handleKeyDown(e: KeyboardEvent) {
@@ -54,7 +50,7 @@ export default function Editor() {
         const allColors = Object.fromEntries(
             US_HHKB_LAYOUT.map((key) => [key.id, keyColors[key.id] ?? HHKB_PALETTE.YUKI]),
         );
-        saveDesign(allColors);
+        router.post(store.url(), { layout_type: 'US_HHKB', colors: allColors });
     }
 
     return (
