@@ -27,13 +27,11 @@ function AutoTextarea({
     value,
     onChange,
     onBlur,
-    placeholder,
     className,
 }: {
     value: string;
     onChange: (value: string) => void;
     onBlur: () => void;
-    placeholder: string;
     className: string;
 }) {
     const ref = useRef<HTMLTextAreaElement>(null);
@@ -52,11 +50,38 @@ function AutoTextarea({
             ref={ref}
             rows={1}
             value={value}
-            placeholder={placeholder}
             onChange={(e) => onChange(e.target.value)}
             onBlur={onBlur}
             className={className}
         />
+    );
+}
+
+/** An input that grows to fit its content so it can sit inline next to the No. label. */
+function AutoWidthInput({
+    value,
+    onChange,
+    onBlur,
+    className,
+}: {
+    value: string;
+    onChange: (value: string) => void;
+    onBlur: () => void;
+    className: string;
+}) {
+    return (
+        <span className="relative inline-grid">
+            <span className="invisible col-start-1 row-start-1 px-1 whitespace-pre">
+                {value || ' '}
+            </span>
+            <input
+                type="text"
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
+                onBlur={onBlur}
+                className={`col-start-1 row-start-1 w-full bg-transparent px-1 text-center focus:outline-none ${className}`}
+            />
+        </span>
     );
 }
 
@@ -132,11 +157,11 @@ export default function Slideshow({
         return (
             <>
                 <Head title="Slideshow - HHKB Color Simulator" />
-                <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-gray-900 text-gray-300">
+                <div className="flex min-h-screen flex-col items-center justify-center gap-4 bg-white text-gray-500">
                     <p>表示できるスライドがありません</p>
                     <Link
                         href={presentationIndex.url()}
-                        className="text-sm text-gray-400 hover:text-white"
+                        className="text-sm text-gray-400 hover:text-gray-700"
                     >
                         管理に戻る
                     </Link>
@@ -150,72 +175,63 @@ export default function Slideshow({
             <Head title="Slideshow - HHKB Color Simulator" />
             <div
                 ref={containerRef}
-                className="relative flex min-h-screen flex-col items-center justify-center gap-8 bg-gray-900 px-4 py-12 text-white sm:px-16"
+                className="relative flex min-h-screen flex-col bg-white px-4 py-10 text-gray-900 sm:px-16"
             >
                 <Link
                     href={presentationIndex.url()}
-                    className="absolute top-4 left-4 text-sm text-gray-500 hover:text-white"
+                    className="absolute top-4 left-4 text-sm text-gray-400 hover:text-gray-700"
                 >
                     ← 管理に戻る
                 </Link>
                 <button
                     onClick={toggleFullscreen}
-                    className="absolute top-4 right-4 text-sm text-gray-500 hover:text-white"
+                    className="absolute top-4 right-4 text-sm text-gray-400 hover:text-gray-700"
                 >
                     {isFullscreen ? '通常表示' : 'フルスクリーン'}
                 </button>
 
-                <div className="flex w-full max-w-3xl flex-col items-center gap-2 text-center">
-                    <div className="flex w-full items-baseline justify-center gap-2">
-                        <span className="shrink-0 text-2xl font-semibold text-gray-400">
-                            No.{current + 1}
-                        </span>
-                        <input
-                            type="text"
-                            value={slide.name ?? ''}
-                            placeholder="名前を入力"
-                            onChange={(e) =>
-                                editSlide({ name: e.target.value })
-                            }
-                            onBlur={() => persistSlide(slide)}
-                            className="min-w-0 flex-1 bg-transparent text-center text-2xl font-semibold text-white placeholder:text-gray-600 focus:outline-none"
-                        />
-                    </div>
-                </div>
+                <h1 className="mt-10 flex flex-wrap items-baseline justify-center gap-x-3 text-center text-6xl leading-tight font-bold sm:text-7xl">
+                    <span className="shrink-0">No.{current + 1}</span>
+                    <AutoWidthInput
+                        value={slide.name ?? ''}
+                        onChange={(value) => editSlide({ name: value })}
+                        onBlur={() => persistSlide(slide)}
+                        className="font-bold"
+                    />
+                </h1>
 
-                <div className="w-full max-w-3xl">
-                    <div className="pointer-events-none">
+                <div className="flex flex-1 flex-col items-center justify-center gap-10 py-10">
+                    <div className="pointer-events-none rounded-2xl border border-gray-300 bg-white p-6 shadow-sm sm:p-10">
                         <KeyboardCanvas
                             layout={US_HHKB_LAYOUT}
                             keyColors={slide.design.colors}
                             onKeyClick={() => {}}
                         />
                     </div>
+
+                    <AutoTextarea
+                        value={slide.comment ?? ''}
+                        onChange={(value) => editSlide({ comment: value })}
+                        onBlur={() => persistSlide(slide)}
+                        className="w-full max-w-3xl resize-none overflow-hidden bg-transparent text-center text-xl whitespace-pre-wrap text-gray-600 focus:outline-none"
+                    />
                 </div>
 
-                <AutoTextarea
-                    value={slide.comment ?? ''}
-                    placeholder="コメントを入力（改行できます）"
-                    onChange={(value) => editSlide({ comment: value })}
-                    onBlur={() => persistSlide(slide)}
-                    className="w-full max-w-3xl resize-none overflow-hidden bg-transparent text-center text-base whitespace-pre-wrap text-gray-300 placeholder:text-gray-600 focus:outline-none"
-                />
-
-                <div className="flex items-center gap-6">
+                <div className="flex items-center justify-center gap-6">
                     <button
                         onClick={() => goTo(current - 1)}
                         disabled={current === 0}
-                        className="rounded-md px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 disabled:opacity-30"
+                        className="rounded-md px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 disabled:opacity-30"
                     >
                         ← 前へ
                     </button>
-                    <span className="text-sm text-gray-500">
+                    <span className="text-sm text-gray-400">
                         {current + 1} / {total}
                     </span>
                     <button
                         onClick={() => goTo(current + 1)}
                         disabled={current === total - 1}
-                        className="rounded-md px-4 py-2 text-sm text-gray-300 hover:bg-gray-800 disabled:opacity-30"
+                        className="rounded-md px-4 py-2 text-sm text-gray-600 hover:bg-gray-100 disabled:opacity-30"
                     >
                         次へ →
                     </button>
