@@ -213,7 +213,7 @@ export default function Slideshow({
                         value={slide.comment ?? ''}
                         onChange={(value) => editSlide({ comment: value })}
                         onBlur={() => persistSlide(slide)}
-                        className="w-full max-w-3xl resize-none overflow-hidden bg-transparent text-center text-xl whitespace-pre-wrap text-gray-600 focus:outline-none"
+                        className="w-full max-w-3xl resize-none overflow-hidden bg-transparent text-center text-3xl whitespace-pre-wrap text-gray-600 focus:outline-none"
                     />
                 </div>
 
