@@ -28,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configureDefaults();
 
         Gate::define('delete-designs', fn (User $user): bool => $user->isAdmin());
+        Gate::define('manage-presentation', fn (User $user): bool => $user->isAdmin());
     }
 
     /**
