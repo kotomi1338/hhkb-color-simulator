@@ -1,6 +1,7 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { store } from '@/actions/App/Http/Controllers/DesignController';
+import { index as presentationIndex } from '@/actions/App/Http/Controllers/PresentationController';
 import AuthControl from '@/components/auth-control';
 import ColorPicker from '@/components/color-picker';
 import KeyboardCanvas from '@/components/keyboard-canvas';
@@ -14,10 +15,15 @@ import type { Design } from '@/types';
 type PaintMode = 'normal' | 'toggle';
 
 export default function Editor({ design }: { design: Design | null }) {
-    const { keyColors, setKeyColor, fillAll, fillRow, loadColors } = useKeyboardState();
+    const { auth } = usePage().props;
+    const isAdmin = auth.user?.role === 'admin';
+    const { keyColors, setKeyColor, fillAll, fillRow, loadColors } =
+        useKeyboardState();
     const [paintMode, setPaintMode] = useState<PaintMode>('normal');
     const [activeColor, setActiveColor] = useState<string>(HHKB_PALETTE.YUKI);
-    const [secondaryColor, setSecondaryColor] = useState<string>(HHKB_PALETTE.YUKI);
+    const [secondaryColor, setSecondaryColor] = useState<string>(
+        HHKB_PALETTE.YUKI,
+    );
     const [hoveredKeyId, setHoveredKeyId] = useState<string | null>(null);
 
     useEffect(() => {
@@ -41,7 +47,10 @@ export default function Editor({ design }: { design: Design | null }) {
     function applyColor(keyId: string) {
         if (paintMode === 'toggle') {
             const current = keyColors[keyId] ?? HHKB_PALETTE.YUKI;
-            setKeyColor(keyId, current === activeColor ? secondaryColor : activeColor);
+            setKeyColor(
+                keyId,
+                current === activeColor ? secondaryColor : activeColor,
+            );
         } else {
             setKeyColor(keyId, activeColor);
         }
@@ -49,7 +58,10 @@ export default function Editor({ design }: { design: Design | null }) {
 
     function handleSave() {
         const allColors = Object.fromEntries(
-            US_HHKB_LAYOUT.map((key) => [key.id, keyColors[key.id] ?? HHKB_PALETTE.YUKI]),
+            US_HHKB_LAYOUT.map((key) => [
+                key.id,
+                keyColors[key.id] ?? HHKB_PALETTE.YUKI,
+            ]),
         );
         router.post(store.url(), { layout_type: 'US_HHKB', colors: allColors });
     }
@@ -57,18 +69,31 @@ export default function Editor({ design }: { design: Design | null }) {
     return (
         <>
             <Head title="HHKB Color Simulator" />
-            <div className="min-h-screen bg-gray-100 flex flex-col">
-                <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-4 flex items-center justify-between gap-2">
-                    <h1 className="text-base sm:text-lg font-semibold text-gray-800 truncate">HHKB Color Simulator</h1>
-                    <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-                        <Link href={history.url()} className="text-sm text-gray-500 hover:text-gray-700">
+            <div className="flex min-h-screen flex-col bg-gray-100">
+                <header className="flex items-center justify-between gap-2 border-b border-gray-200 bg-white px-4 py-4 sm:px-6">
+                    <h1 className="truncate text-base font-semibold text-gray-800 sm:text-lg">
+                        HHKB Color Simulator
+                    </h1>
+                    <div className="flex shrink-0 items-center gap-3 sm:gap-4">
+                        <Link
+                            href={history.url()}
+                            className="text-sm text-gray-500 hover:text-gray-700"
+                        >
                             History
                         </Link>
+                        {isAdmin && (
+                            <Link
+                                href={presentationIndex.url()}
+                                className="text-sm text-gray-500 hover:text-gray-700"
+                            >
+                                Presentation
+                            </Link>
+                        )}
                         <AuthControl />
                     </div>
                 </header>
 
-                <main className="flex-1 flex flex-col items-center justify-center gap-6 sm:gap-8 p-4 sm:p-8 w-full">
+                <main className="flex w-full flex-1 flex-col items-center justify-center gap-6 p-4 sm:gap-8 sm:p-8">
                     <KeyboardCanvas
                         layout={US_HHKB_LAYOUT}
                         keyColors={keyColors}
@@ -81,10 +106,10 @@ export default function Editor({ design }: { design: Design | null }) {
                             <button
                                 onClick={() => setPaintMode('normal')}
                                 className={cn(
-                                    'text-xs px-3 py-1.5 rounded-md border transition-colors',
+                                    'rounded-md border px-3 py-1.5 text-xs transition-colors',
                                     paintMode === 'normal'
-                                        ? 'bg-gray-800 text-white border-gray-800'
-                                        : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50',
+                                        ? 'border-gray-800 bg-gray-800 text-white'
+                                        : 'border-gray-300 bg-white text-gray-600 hover:bg-gray-50',
                                 )}
                             >
                                 通常
@@ -92,10 +117,10 @@ export default function Editor({ design }: { design: Design | null }) {
                             <button
                                 onClick={() => setPaintMode('toggle')}
                                 className={cn(
-                                    'text-xs px-3 py-1.5 rounded-md border transition-colors',
+                                    'rounded-md border px-3 py-1.5 text-xs transition-colors',
                                     paintMode === 'toggle'
-                                        ? 'bg-gray-800 text-white border-gray-800'
-                                        : 'bg-white text-gray-600 border-gray-300 hover:bg-gray-50',
+                                        ? 'border-gray-800 bg-gray-800 text-white'
+                                        : 'border-gray-300 bg-white text-gray-600 hover:bg-gray-50',
                                 )}
                             >
                                 トグル
@@ -103,34 +128,49 @@ export default function Editor({ design }: { design: Design | null }) {
                         </div>
 
                         {paintMode === 'toggle' ? (
-                            <div className="flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
+                            <div className="flex flex-col items-center gap-6 sm:flex-row sm:gap-8">
                                 <div className="flex flex-col items-center gap-2">
-                                    <span className="text-xs text-gray-500">1色目</span>
-                                    <ColorPicker activeColor={activeColor} onColorSelect={setActiveColor} />
+                                    <span className="text-xs text-gray-500">
+                                        1色目
+                                    </span>
+                                    <ColorPicker
+                                        activeColor={activeColor}
+                                        onColorSelect={setActiveColor}
+                                    />
                                 </div>
                                 <div className="flex flex-col items-center gap-2">
-                                    <span className="text-xs text-gray-500">2色目</span>
-                                    <ColorPicker activeColor={secondaryColor} onColorSelect={setSecondaryColor} />
+                                    <span className="text-xs text-gray-500">
+                                        2色目
+                                    </span>
+                                    <ColorPicker
+                                        activeColor={secondaryColor}
+                                        onColorSelect={setSecondaryColor}
+                                    />
                                 </div>
                             </div>
                         ) : (
-                            <ColorPicker activeColor={activeColor} onColorSelect={setActiveColor} />
+                            <ColorPicker
+                                activeColor={activeColor}
+                                onColorSelect={setActiveColor}
+                            />
                         )}
                     </div>
 
                     <div className="flex flex-wrap items-center justify-center gap-2">
                         <button
                             onClick={() => fillAll(US_HHKB_LAYOUT, activeColor)}
-                            className="text-xs text-gray-600 bg-white border border-gray-300 px-3 py-1.5 rounded-md hover:bg-gray-50"
+                            className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-50"
                         >
                             全キー
                         </button>
-                        <span className="hidden sm:block w-px h-4 bg-gray-300" />
+                        <span className="hidden h-4 w-px bg-gray-300 sm:block" />
                         {([0, 1, 2, 3, 4] as const).map((row) => (
                             <button
                                 key={row}
-                                onClick={() => fillRow(US_HHKB_LAYOUT, row, activeColor)}
-                                className="text-xs text-gray-600 bg-white border border-gray-300 px-3 py-1.5 rounded-md hover:bg-gray-50"
+                                onClick={() =>
+                                    fillRow(US_HHKB_LAYOUT, row, activeColor)
+                                }
+                                className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-600 hover:bg-gray-50"
                             >
                                 {row + 1}行目
                             </button>
@@ -139,7 +179,7 @@ export default function Editor({ design }: { design: Design | null }) {
 
                     <button
                         onClick={handleSave}
-                        className="bg-gray-800 text-white text-sm px-6 py-2 rounded-md hover:bg-gray-700"
+                        className="rounded-md bg-gray-800 px-6 py-2 text-sm text-white hover:bg-gray-700"
                     >
                         このデザインを保存
                     </button>
