@@ -6,6 +6,7 @@ use Database\Factories\DesignFactory;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Design extends Model
 {
@@ -32,5 +33,15 @@ class Design extends Model
         return [
             'colors' => 'array',
         ];
+    }
+
+    /**
+     * Get the presentation slide for this design.
+     *
+     * @return HasOne<PresentationSlide, $this>
+     */
+    public function presentationSlide(): HasOne
+    {
+        return $this->hasOne(PresentationSlide::class);
     }
 }
