@@ -8,6 +8,7 @@ import KeyboardCanvas from '@/components/keyboard-canvas';
 import { HHKB_PALETTE } from '@/constants/colors';
 import { US_HHKB_LAYOUT } from '@/constants/layouts/us-hhkb';
 import { useKeyboardState } from '@/hooks/use-keyboard-state';
+import { generateRandomDesign } from '@/lib/random-design';
 import { cn } from '@/lib/utils';
 import { history } from '@/routes';
 import type { Design } from '@/types';
@@ -54,6 +55,10 @@ export default function Editor({ design }: { design: Design | null }) {
         } else {
             setKeyColor(keyId, activeColor);
         }
+    }
+
+    function handleRandom() {
+        loadColors(generateRandomDesign(US_HHKB_LAYOUT));
     }
 
     function handleSave() {
@@ -155,6 +160,13 @@ export default function Editor({ design }: { design: Design | null }) {
                             />
                         )}
                     </div>
+
+                    <button
+                        onClick={handleRandom}
+                        className="rounded-full border border-pink-200 bg-pink-50 px-5 py-2 text-sm font-medium text-pink-500 hover:bg-pink-100"
+                    >
+                        🎲 おまかせ配色
+                    </button>
 
                     <div className="flex flex-wrap items-center justify-center gap-2">
                         <button
