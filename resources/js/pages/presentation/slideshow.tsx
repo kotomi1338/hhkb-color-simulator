@@ -60,7 +60,10 @@ function AutoTextarea({
     );
 }
 
-/** An input that grows to fit its content so it can sit inline next to the No. label. */
+/**
+ * Grows to fit its content so it can sit inline next to the No. label, but
+ * wraps onto multiple centered lines once it reaches the available width.
+ */
 function AutoWidthInput({
     value,
     onChange,
@@ -75,17 +78,17 @@ function AutoWidthInput({
     className: string;
 }) {
     return (
-        <span className="relative inline-grid">
-            <span className="invisible col-start-1 row-start-1 px-1 whitespace-pre">
+        <span className="relative grid max-w-full">
+            <span className="invisible col-start-1 row-start-1 px-1 text-center break-words whitespace-pre-wrap">
                 {value || ' '}
             </span>
-            <input
-                type="text"
+            <textarea
+                rows={1}
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 onBlur={onBlur}
                 onFocus={onFocus}
-                className={`col-start-1 row-start-1 w-full bg-transparent px-1 text-center focus:outline-none ${className}`}
+                className={`col-start-1 row-start-1 h-full w-full resize-none overflow-hidden bg-transparent px-1 text-center break-words focus:outline-none ${className}`}
             />
         </span>
     );
