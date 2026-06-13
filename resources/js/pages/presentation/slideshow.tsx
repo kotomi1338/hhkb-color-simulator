@@ -235,7 +235,11 @@ export default function Slideshow({
                     <AutoTextarea
                         value={slide.comment ?? ''}
                         onChange={(value) => editSlide({ comment: value })}
-                        onBlur={() => persistSlide(slide)}
+                        onFocus={() => setIsEditing(true)}
+                        onBlur={() => {
+                            setIsEditing(false);
+                            persistSlide(slide);
+                        }}
                         className="w-full max-w-3xl resize-none overflow-hidden bg-transparent text-center text-3xl whitespace-pre-wrap text-gray-600 focus:outline-none"
                     />
                 </div>
