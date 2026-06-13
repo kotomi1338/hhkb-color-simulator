@@ -33,8 +33,16 @@ class DesignController extends Controller
      */
     public function index(): Response
     {
+        $designs = Design::query()
+            ->select('designs.*')
+            ->leftJoin('presentation_slides', 'presentation_slides.design_id', '=', 'designs.id')
+            ->orderByRaw('presentation_slides.sort_order is null')
+            ->orderBy('presentation_slides.sort_order')
+            ->orderBy('designs.created_at')
+            ->get();
+
         return Inertia::render('history', [
-            'designs' => Design::latest()->get(),
+            'designs' => $designs,
         ]);
     }
 
