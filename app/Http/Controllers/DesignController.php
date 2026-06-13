@@ -53,7 +53,7 @@ class DesignController extends Controller
     {
         Design::create($request->validated());
 
-        return to_route('history');
+        return back();
     }
 
     /**

@@ -15,12 +15,12 @@ class DesignTest extends TestCase
 
     public function test_anyone_can_store_a_design(): void
     {
-        $response = $this->post(route('designs.store'), [
+        $response = $this->from(route('home'))->post(route('designs.store'), [
             'layout_type' => 'US_HHKB',
             'colors' => ['key-0' => '#FFFFFF', 'key-1' => '#000000'],
         ]);
 
-        $response->assertRedirect(route('history'));
+        $response->assertRedirect(route('home'));
         $this->assertDatabaseCount('designs', 1);
     }
 

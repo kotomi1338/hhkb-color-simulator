@@ -1,5 +1,5 @@
 import { Head, Link, router, usePage } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { store } from '@/actions/App/Http/Controllers/DesignController';
 import { index as presentationIndex } from '@/actions/App/Http/Controllers/PresentationController';
 import AuthControl from '@/components/auth-control';
@@ -26,6 +26,8 @@ export default function Editor({ design }: { design: Design | null }) {
         HHKB_PALETTE.YUKI,
     );
     const [hoveredKeyId, setHoveredKeyId] = useState<string | null>(null);
+    const [showSaved, setShowSaved] = useState(false);
+    const savedTimer = useRef<number | null>(null);
 
     useEffect(() => {
         if (design) {
@@ -68,12 +70,34 @@ export default function Editor({ design }: { design: Design | null }) {
                 keyColors[key.id] ?? HHKB_PALETTE.YUKI,
             ]),
         );
-        router.post(store.url(), { layout_type: 'US_HHKB', colors: allColors });
+        router.post(
+            store.url(),
+            { layout_type: 'US_HHKB', colors: allColors },
+            {
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    setShowSaved(true);
+                    if (savedTimer.current) {
+                        window.clearTimeout(savedTimer.current);
+                    }
+                    savedTimer.current = window.setTimeout(
+                        () => setShowSaved(false),
+                        2000,
+                    );
+                },
+            },
+        );
     }
 
     return (
         <>
             <Head title="HHKB Color Simulator" />
+            {showSaved && (
+                <div className="fixed top-4 left-1/2 z-50 -translate-x-1/2 rounded-md bg-gray-800 px-4 py-2 text-sm text-white shadow-lg">
+                    保存しました
+                </div>
+            )}
             <div className="flex min-h-screen flex-col bg-gray-100">
                 <header className="flex items-center justify-between gap-2 border-b border-gray-200 bg-white px-4 py-4 sm:px-6">
                     <h1 className="truncate text-base font-semibold text-gray-800 sm:text-lg">
