@@ -27,11 +27,13 @@ function AutoTextarea({
     value,
     onChange,
     onBlur,
+    onFocus,
     className,
 }: {
     value: string;
     onChange: (value: string) => void;
     onBlur: () => void;
+    onFocus?: () => void;
     className: string;
 }) {
     const ref = useRef<HTMLTextAreaElement>(null);
@@ -52,6 +54,7 @@ function AutoTextarea({
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onBlur={onBlur}
+            onFocus={onFocus}
             className={className}
         />
     );
@@ -62,11 +65,13 @@ function AutoWidthInput({
     value,
     onChange,
     onBlur,
+    onFocus,
     className,
 }: {
     value: string;
     onChange: (value: string) => void;
     onBlur: () => void;
+    onFocus?: () => void;
     className: string;
 }) {
     return (
@@ -79,6 +84,7 @@ function AutoWidthInput({
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 onBlur={onBlur}
+                onFocus={onFocus}
                 className={`col-start-1 row-start-1 w-full bg-transparent px-1 text-center focus:outline-none ${className}`}
             />
         </span>
@@ -93,6 +99,7 @@ export default function Slideshow({
     const [slides, setSlides] = useState<PresentationSlide[]>(initialSlides);
     const [current, setCurrent] = useState(0);
     const [isFullscreen, setIsFullscreen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
     const total = slides.length;
@@ -136,6 +143,18 @@ export default function Slideshow({
         return () =>
             document.removeEventListener('fullscreenchange', handleChange);
     }, []);
+
+    // Auto-advance to the next slide every 7 seconds (looping at the end),
+    // pausing while the name or comment is being edited.
+    useEffect(() => {
+        if (isEditing || total <= 1) {
+            return;
+        }
+        const timer = setTimeout(() => {
+            setCurrent((prev) => (prev + 1) % total);
+        }, 7000);
+        return () => clearTimeout(timer);
+    }, [current, isEditing, total]);
 
     function toggleFullscreen() {
         if (document.fullscreenElement) {
@@ -195,7 +214,11 @@ export default function Slideshow({
                     <AutoWidthInput
                         value={slide.name ?? ''}
                         onChange={(value) => editSlide({ name: value })}
-                        onBlur={() => persistSlide(slide)}
+                        onFocus={() => setIsEditing(true)}
+                        onBlur={() => {
+                            setIsEditing(false);
+                            persistSlide(slide);
+                        }}
                         className="font-bold"
                     />
                 </h1>
